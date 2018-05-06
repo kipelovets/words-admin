@@ -13,14 +13,6 @@ export const LessonsList = (props) => (
 const LessonTitle = ({ record }) => {
     return <span>Lesson {record ? `"${record.name}"` : ''}</span>;
 };
-/*
-
-                    <ArrayField source="prompt">
-                        <Datagrid>
-                            <TextInput source="text"/>
-                        </Datagrid>
-                    </ArrayField>
- */
 
 export const LessonEdit = (props) => (
     <Edit title={<LessonTitle />} {...props}>
@@ -34,7 +26,11 @@ export const LessonEdit = (props) => (
                         </SimpleFormIterator>
                     </ArrayInput>
                     <TextInput label="Correct answer" source="answer" />
-                    <TextInput source="button" />
+                    <ArrayInput source="buttons">
+                        <SimpleFormIterator>
+                            <TextInput source="text" fullWidth />
+                        </SimpleFormIterator>
+                    </ArrayInput>
                 </SimpleFormIterator>
             </ArrayInput>
         </SimpleForm>
@@ -45,7 +41,21 @@ export const LessonCreate = (props) => (
     <Create {...props}>
         <SimpleForm>
             <TextInput source="name" />
-            <LongTextInput source="body" />
+            <ArrayInput source="steps" sortable>
+                <SimpleFormIterator sortable>
+                    <ArrayInput source="prompt">
+                        <SimpleFormIterator>
+                            <TextInput source="text" fullWidth />
+                        </SimpleFormIterator>
+                    </ArrayInput>
+                    <TextInput label="Correct answer" source="answer" />
+                    <ArrayInput source="buttons">
+                        <SimpleFormIterator>
+                            <TextInput source="text" fullWidth />
+                        </SimpleFormIterator>
+                    </ArrayInput>
+                </SimpleFormIterator>
+            </ArrayInput>
         </SimpleForm>
     </Create>
 );

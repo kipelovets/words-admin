@@ -7,7 +7,7 @@ import './App.css';
 
 import { LessonsList, LessonEdit, LessonCreate } from './lessons';
 
-const dataProvider = simpleRestProvider('http://words.docker');
+const dataProvider = simpleRestProvider(process.env.REACT_APP_API_ROOT);
 const App = () => (
     <Admin dataProvider={dataProvider}>
         <Resource name="lessons" list={LessonsList} edit={LessonEdit} create={LessonCreate} />
