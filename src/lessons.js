@@ -1,6 +1,39 @@
 import React from 'react';
 import { List, Datagrid, TextField, EditButton, Edit, Create, ReferenceField, DisabledInput, LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput, ArrayInput, ArrayField, SimpleFormIterator} from 'react-admin';
 
+export const addLessonDataProvider = requestHandler => (type, resource, params) => {
+    if (resource != "lessons") {
+        return requestHandler(type, resource, params);
+    }
+
+    if (type == "UPDATE" || type == "CREATE") {
+        params.data.steps.forEach((step) => {
+            step.prompt = step.prompt.map(p => p.text);
+            step.answers = step.answers.map(b => b.text);
+        });
+    }
+
+    return requestHandler(type, resource, params).then((data) => {
+        if (type == "GET_LIST") {
+            data.data.forEach((lesson) => {
+                lesson.id = lesson.name;
+            })
+        } else if (["GET_ONE", "CREATE", "UPDATE"]) {
+            data.data.id = data.data.name;
+            data.data.steps.forEach(step => {
+                step.prompt = step.prompt.map(p => {
+                    return {text:p};
+                });
+                step.answers = step.answers.map(b => {
+                    return {text:b};
+                });
+            });
+        } 
+
+        return data;
+    });
+};
+
 export const LessonsList = (props) => (
     <List {...props}>
         <Datagrid>
@@ -25,8 +58,8 @@ export const LessonEdit = (props) => (
                             <TextInput source="text" fullWidth />
                         </SimpleFormIterator>
                     </ArrayInput>
-                    <TextInput label="Correct answer" source="answer" />
-                    <ArrayInput source="buttons">
+                    <TextInput label="Correct answer" source="correct_answer" />
+                    <ArrayInput source="answers">
                         <SimpleFormIterator>
                             <TextInput source="text" fullWidth />
                         </SimpleFormIterator>
@@ -48,8 +81,8 @@ export const LessonCreate = (props) => (
                             <TextInput source="text" fullWidth />
                         </SimpleFormIterator>
                     </ArrayInput>
-                    <TextInput label="Correct answer" source="answer" />
-                    <ArrayInput source="buttons">
+                    <TextInput label="Correct answer" source="correct_answer" />
+                    <ArrayInput source="answers">
                         <SimpleFormIterator>
                             <TextInput source="text" fullWidth />
                         </SimpleFormIterator>
